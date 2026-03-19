@@ -39,6 +39,7 @@ set(common_sources
     PageInfo.cpp PageInfo.h
     BackgroundTask.cpp BackgroundTask.h
     ProcessingTaskQueue.cpp ProcessingTaskQueue.h
+    BatchPipeline.cpp BatchPipeline.h
     PageSequence.cpp PageSequence.h
     StageSequence.cpp StageSequence.h
     ProjectPages.cpp ProjectPages.h
