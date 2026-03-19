@@ -47,4 +47,26 @@ La ruta `project=` en el config es **relativa al directorio del archivo de confi
 
 (Necesitas haber creado antes `project.ScanTailor` con la GUI, como se indica arriba.)
 
+## Crear proyecto desde cualquier directorio de imágenes (sin GUI)
+
+Para generar un proyecto y procesar **sin abrir la GUI** desde un directorio con imágenes (tif, png, jpg, etc.):
+
+```bash
+# Desde la raíz del repo
+python3 cli/create_project_from_dir.py /ruta/a/tus/imagenes --run
+```
+
+Eso crea `project.ScanTailor` en ese directorio (con todo en automático), crea la carpeta `out/` y ejecuta `scantailor-cli` para procesar todas las imágenes. Opciones útiles:
+
+- `--output-dir NOMBRE` – carpeta de salida (default: `out`)
+- `--project RUTA.ScanTailor` – dónde guardar el proyecto
+- `--threads N` – número de hilos (con `--run`)
+- `--scantailor-cli RUTA` – ruta al ejecutable si no está en `build/` ni en PATH
+
+Ejemplo con tu carpeta de imágenes:
+
+```bash
+python3 cli/create_project_from_dir.py ~/mios/libros-enriquecidos/outputs/imagenes --run --threads 2
+```
+
 Las páginas procesadas se escribirán en el directorio de salida configurado en el proyecto (p. ej. `out/`).
