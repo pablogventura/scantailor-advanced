@@ -29,11 +29,13 @@
 #include "CliConfig.h"
 #include "CliPageSelectionProvider.h"
 #include "NoOpFilterUiInterface.h"
+#include "ProjectGeneratorFromDir.h"
 
 static void usage(const char* prog) {
   QTextStream err(stderr);
   err << "Usage: " << prog
       << " [OPTIONS] [PROJECT.ScanTailor]\n"
+         "  --from-dir DIR       Create project from images in DIR and process (no GUI)\n"
          "  -c, --config FILE    Load config from FILE (project=, threads=, output-dir=)\n"
          "  -o, --output-dir DIR Override output directory\n"
          "  -t, --threads N      Max parallel threads (default: auto)\n"
@@ -46,6 +48,7 @@ int main(int argc, char* argv[]) {
   QCoreApplication::setApplicationName(QLatin1String("scantailor-cli"));
 
   QString projectPath;
+  QString fromDir;
   QString configPath;
   QString outputDirOverride;
   int threadsOverride = -1;
@@ -55,6 +58,14 @@ int main(int argc, char* argv[]) {
     if (arg == QLatin1String("-h") || arg == QLatin1String("--help")) {
       usage(argv[0]);
       return 0;
+    }
+    if (arg == QLatin1String("--from-dir")) {
+      if (i + 1 >= argc) {
+        std::cerr << "Missing argument for " << arg.toStdString() << "\n";
+        return 1;
+      }
+      fromDir = QString::fromUtf8(argv[++i]);
+      continue;
     }
     if (arg == QLatin1String("-c") || arg == QLatin1String("--config")) {
       if (i + 1 >= argc) {
@@ -112,8 +123,22 @@ int main(int argc, char* argv[]) {
     threadsOverride = config.threads;
   }
 
+  if (!fromDir.isEmpty()) {
+    const QDir dir(fromDir);
+    if (!dir.exists()) {
+      std::cerr << "Directory not found: " << fromDir.toStdString() << "\n";
+      return 1;
+    }
+    projectPath = ProjectGeneratorFromDir::generate(dir.absolutePath(), QStringLiteral("out"));
+    if (projectPath.isEmpty()) {
+      std::cerr << "No images found in directory or failed to create project: " << fromDir.toStdString() << "\n";
+      return 1;
+    }
+    std::cout << "Created project: " << projectPath.toStdString() << "\n";
+  }
+
   if (projectPath.isEmpty()) {
-    std::cerr << "No project file specified. Use PROJECT.ScanTailor or -c config.conf with project=\n";
+    std::cerr << "No project file specified. Use PROJECT.ScanTailor, --from-dir DIR, or -c config.conf with project=\n";
     return 1;
   }
 

@@ -2,6 +2,17 @@
 
 Carpeta de ejemplo para probar el CLI con un proyecto que usa opciones automáticas.
 
+## Crear proyecto y procesar desde un directorio (sin scripts)
+
+El propio **scantailor-cli** puede crear el proyecto desde un directorio de imágenes y procesar todo en un solo paso:
+
+```bash
+# Desde la raíz del repo: crea project.ScanTailor en DIR, procesa y escribe en DIR/out/
+./build/scantailor-cli --from-dir cli/sample/in -t 2
+```
+
+Con `--from-dir DIR` no hace falta tener ni generar antes un `.ScanTailor`; el ejecutable descubre las imágenes (tif, png, jpg, bmp), genera el proyecto con valores automáticos y ejecuta el pipeline. Opcionalmente puedes usar `-o DIR` para otro directorio de salida y `-t N` para el número de hilos.
+
 ## Contenido
 
 - `in/` – Dos imágenes PNG de ejemplo (page1.png, page2.png).
@@ -47,26 +58,16 @@ La ruta `project=` en el config es **relativa al directorio del archivo de confi
 
 (Necesitas haber creado antes `project.ScanTailor` con la GUI, como se indica arriba.)
 
-## Crear proyecto desde cualquier directorio de imágenes (sin GUI)
+## Crear proyecto desde cualquier directorio (script Python, opcional)
 
-Para generar un proyecto y procesar **sin abrir la GUI** desde un directorio con imágenes (tif, png, jpg, etc.):
+Si prefieres usar el script Python en lugar de `--from-dir`:
 
 ```bash
-# Desde la raíz del repo
 python3 cli/create_project_from_dir.py /ruta/a/tus/imagenes --run
 ```
 
-Eso crea `project.ScanTailor` en ese directorio (con todo en automático), crea la carpeta `out/` y ejecuta `scantailor-cli` para procesar todas las imágenes. Opciones útiles:
-
-- `--output-dir NOMBRE` – carpeta de salida (default: `out`)
-- `--project RUTA.ScanTailor` – dónde guardar el proyecto
-- `--threads N` – número de hilos (con `--run`)
-- `--scantailor-cli RUTA` – ruta al ejecutable si no está en `build/` ni en PATH
-
-Ejemplo con tu carpeta de imágenes:
+Opciones: `--output-dir`, `--project`, `--threads`, `--scantailor-cli`. Equivalente directo con el CLI:
 
 ```bash
-python3 cli/create_project_from_dir.py ~/mios/libros-enriquecidos/outputs/imagenes --run --threads 2
+./build/scantailor-cli --from-dir /ruta/a/tus/imagenes -o out -t 2
 ```
-
-Las páginas procesadas se escribirán en el directorio de salida configurado en el proyecto (p. ej. `out/`).

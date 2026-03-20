@@ -2,7 +2,8 @@ set(cli_sources
     main.cpp
     CliConfig.cpp CliConfig.h
     CliPageSelectionProvider.cpp CliPageSelectionProvider.h
-    NoOpFilterUiInterface.cpp NoOpFilterUiInterface.h)
+    NoOpFilterUiInterface.cpp NoOpFilterUiInterface.h
+    ProjectGeneratorFromDir.cpp ProjectGeneratorFromDir.h)
 
 set(cli_resource_files
     "${SCANTAILOR_RESOURCES_DIR}/resources.qrc"
